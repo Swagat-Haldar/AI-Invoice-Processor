@@ -103,8 +103,8 @@ export default function App() {
     <div className="container">
       <header className="topbar">
         <div>
-          <h1>AI Invoice Processing App</h1>
-          <p className="subtitle">Upload PDF, DOCX, JPG, or PNG and extract structured invoice JSON with Gemini Vision.</p>
+          <h1>AI Invoice Processing</h1>
+          <p className="subtitle">Upload invoice files and instantly extract structured data using Gemini Vision.</p>
         </div>
         <nav className="tab-nav">
           <button
@@ -127,14 +127,14 @@ export default function App() {
       {activePage === "processor" ? (
         <>
           <section className="card">
-            <h2>Upload Invoice</h2>
+            <h2>Upload Invoice File</h2>
             <form onSubmit={handleUpload} className="upload-form">
               <input
                 type="file"
                 accept=".pdf,.docx,image/jpeg,image/png"
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
               />
-              <button disabled={loading}>{loading ? "Processing..." : "Upload & Extract"}</button>
+              <button disabled={loading}>{loading ? "Extracting..." : "Extract Invoice Data"}</button>
             </form>
             {error && <p className="error">{error}</p>}
           </section>
@@ -142,7 +142,7 @@ export default function App() {
           {hasInvoice && (
             <>
               <section className="card">
-                <h2>Formatted Invoice View</h2>
+                <h2>Invoice Summary</h2>
                 <div className="grid">
                   <InfoBlock title="Invoice Meta" data={invoice.invoice_meta} />
                   <InfoBlock title="Seller" data={invoice.seller} />
@@ -201,7 +201,7 @@ export default function App() {
               </section>
 
               <section className="card">
-                <h2>Raw JSON</h2>
+                <h2>Raw JSON Output</h2>
                 <pre>{rawJson}</pre>
               </section>
             </>
@@ -212,19 +212,19 @@ export default function App() {
           <div className="history-head">
             <h2>Invoice History</h2>
             <button type="button" onClick={loadHistory} disabled={historyLoading}>
-              {historyLoading ? "Refreshing..." : "Refresh"}
+              {historyLoading ? "Refreshing..." : "Refresh List"}
             </button>
           </div>
           {historyError ? <p className="error">{historyError}</p> : null}
           {historyItems.length === 0 && !historyLoading ? (
-            <p className="muted">No previous invoices found.</p>
+            <p className="muted">No saved invoices yet. Process one invoice to see history here.</p>
           ) : null}
           {historyItems.length > 0 ? (
             <div className="history-list">
               {historyItems.map((entry) => (
                 <article key={entry.id} className="history-item">
                   <div>
-                    <h3>Invoice #{entry.id}</h3>
+                    <h3>Record #{entry.id}</h3>
                     <p className="muted">{formatDate(entry.created_at)}</p>
                     <p className="muted">
                       {entry.data?.seller?.name || "Unknown Seller"} → {entry.data?.buyer?.name || "Unknown Buyer"}
@@ -235,7 +235,7 @@ export default function App() {
                     </p>
                   </div>
                   <button type="button" onClick={() => handleViewHistoryInvoice(entry)}>
-                    Open
+                    Open Record
                   </button>
                 </article>
               ))}
